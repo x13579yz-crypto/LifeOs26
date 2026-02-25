@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeOS 26</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Stylesheets (order matters) -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       SPLASH SCREEN — removed by UI.hideSplash() on init
+       ═══════════════════════════════════════════════════ -->
+  <div id="splash-screen" aria-live="polite" aria-atomic="true" aria-label="Loading LifeOS 26">
+    <div class="splash-inner">
+      <span class="splash-icon">⚡</span>
+      <span class="splash-title">LifeOS 26</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       ONBOARDING SCREEN — shown only on first launch
+       ═══════════════════════════════════════════════════ -->
+  <div id="onboarding-screen" hidden role="dialog" aria-modal="true" aria-label="Onboarding"></div>
+
+  <!-- ═══════════════════════════════════════════════════
+       ACCESSIBILITY — skip link + aria announcer
+       ═══════════════════════════════════════════════════ -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <div
+    id="aria-announcer"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    class="sr-only"
+  ></div>
+
+  <!-- ═══════════════════════════════════════════════════
+       OFFLINE BANNER
+       ═══════════════════════════════════════════════════ -->
+  <div id="offline-banner" hidden role="alert" aria-live="assertive">
+    📶 You are offline — App works, data saves locally
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       HEADER
+       ═══════════════════════════════════════════════════ -->
+  <header role="banner">
+    <!-- Brand group: wordmark + animated widget squircle -->
+    <div class="header-brand">
+      <span class="wordmark">LifeOS 26</span>
+      <span class="lifeos-widget" aria-hidden="true"></span>
+    </div>
+    <!-- Right group: backup shield -->
+    <div class="header-actions">
+      <span
+        id="backup-shield-icon"
+        class="backup-shield"
+        role="button"
+        tabindex="0"
+        aria-label="Backup status — click to view"
+      >🛡️</span>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════
+       MAIN CONTENT — 7 SECTIONS
+       ═══════════════════════════════════════════════════ -->
+  <main id="main-content" tabindex="-1" role="main">
+
+    <section
+      id="section-dashboard"
+      role="region"
+      aria-label="Dashboard"
+      hidden
+    ></section>
+
+    <section
+      id="section-study"
+      role="region"
+      aria-label="Study tracker"
+      hidden
+    ></section>
+
+    <section
+      id="section-habits"
+      role="region"
+      aria-label="Habits tracker"
+      hidden
+    ></section>
+
+    <section
+      id="section-workout"
+      role="region"
+      aria-label="Workout planner"
+      hidden
+    ></section>
+
+    <section
+      id="section-health"
+      role="region"
+      aria-label="Health tracking"
+      hidden
+    ></section>
+
+    <section
+      id="section-reports"
+      role="region"
+      aria-label="Analytics reports"
+      hidden
+    ></section>
+
+    <section
+      id="section-profile"
+      role="region"
+      aria-label="Profile and settings"
+      hidden
+    ></section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════
+       BOTTOM NAVIGATION — 7 tabs
+       ═══════════════════════════════════════════════════ -->
+  <nav role="navigation" aria-label="Main navigation" class="bottom-nav">
+
+    <!-- Dashboard -->
+    <button
+      class="nav-tab spring-tap"
+      data-section="dashboard"
+      aria-label="Dashboard"
+      aria-current="page"
+    >
+      <span class="nav-icon-wrap active">
+        <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </span>
+      <span class="nav-label">Home</span>
+    </button>
+
+    <!-- Study -->
+    <button
+      class="nav-tab spring-tap"
+      data-section="study"
+      aria-label="Study"
+      aria-current="false"
+    >
+      <span class="nav-icon-wrap">
+        <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+      </span>
+      <span class="nav-label">Study</span>
+    </button>
+
+    <!-- Habits -->
+    <button
+      class="nav-tab spring-tap"
+      data-section="habits"
+      aria-label="Habits"
+      aria-current="false"
+    >
+      <span class="nav-icon-wrap">
+        <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="9 12 11 14 15 10"/>
+        </svg>
+      </span>
+      <span class="nav-label">Habits</span>
+    </button>
+
+    <!-- Workout -->
+    <button
+      class="nav-tab spring-tap"
+      data-section="workout"
+      aria-label="Workout"
+      aria-current="false"
+    >
+      <span class="nav-icon-wrap">
+        <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="10" width="4" height="4" rx="1"/>
+          <rect x="18" y="10" width="4" height="4" rx="1"/>
+          <rect x="6" y="8" width="2" height="8" rx="1"/>
+          <rect x="16" y="8" width="2" height="8" rx="1"/>
+          <rect x="8" y="11" width="8" height="2" rx="1"/>
+        </svg>
+      </span>
+      <span class="nav-label">Workout</span>
+    </button>
+
+    <!-- Health -->
+    <button
+      class="nav-tab spring-tap"
+      data-section="health"
+      aria-label="Health"
+      aria-current="false"
+    >
+      <span class="nav-icon-wrap">
+        <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </span>
+      <span class="nav-label">Health</span>
+    </button>
+
+    <!-- Reports -->
+    <button
+      class="nav-tab spring-tap"
+      data-section="reports"
+      aria-label="Reports"
+      aria-current="false"
+    >
+      <span class="nav-icon-wrap">
+        <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6"  y1="20" x2="6"  y2="14"/>
+        </svg>
+      </span>
+      <span class="nav-label">Reports</span>
+    </button>
+
+    <!-- Profile -->
+    <button
+      class="nav-tab spring-tap"
+      data-section="profile"
+      aria-label="Profile"
+      aria-current="false"
+    >
+      <span class="nav-icon-wrap nav-icon-wrap--badge">
+        <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <!-- Profile badge dot — shown when backup needs attention -->
+        <span
+          id="profile-badge-dot"
+          class="profile-badge-dot"
+          hidden
+          aria-hidden="true"
+        ></span>
+      </span>
+      <span class="nav-label">Profile</span>
+    </button>
+
+  </nav><!-- /bottom-nav -->
+
+  <!-- ═══════════════════════════════════════════════════
+       JAVASCRIPT — exact load order (26 modules + app)
+       ═══════════════════════════════════════════════════ -->
+
+  <!-- Foundation layer — no dependencies -->
+  <script src="js/foundation/logger.js"></script>
+  <script src="js/foundation/eventbus.js"></script>
+  <script src="js/foundation/schema.js"></script>
+  <script src="js/foundation/perf.js"></script>
+
+  <!-- Data layer -->
+  <script src="js/data/dataprotection.js"></script>
+  <script src="js/data/store.js"></script>
+
+  <!-- System layer -->
+  <script src="js/system/dailyreset.js"></script>
+  <script src="js/system/lifecycle.js"></script>
+  <script src="js/system/audio.js"></script>
+  <script src="js/system/charts.js"></script>
+  <script src="js/system/accessibility.js"></script>
+  <script src="js/system/ui.js"></script>
+  <script src="js/system/backupstatus.js"></script>
+  <script src="js/system/interactionmonitor.js"></script>
+
+  <!-- Feature modules -->
+  <script src="js/features/badges.js"></script>
+  <script src="js/features/exportreminder.js"></script>
+  <script src="js/features/notifications.js"></script>
+  <script src="js/features/onboarding.js"></script>
+
+  <!-- Section modules -->
+  <script src="js/sections/dashboard.js"></script>
+  <script src="js/sections/study.js"></script>
+  <script src="js/sections/habits.js"></script>
+  <script src="js/sections/workout.js"></script>
+  <script src="js/sections/health.js"></script>
+  <script src="js/sections/reports.js"></script>
+  <script src="js/sections/profile.js"></script>
+
+  <!-- Orchestrator — last, depends on everything -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>

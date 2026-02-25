@@ -1,0 +1,228 @@
+/* ═══════════════════════════════════════════════════════════════
+   variables.css — LifeOS 26 v3.5.1
+   Design tokens: dark theme (root), light theme override, high contrast.
+   Keyframes for all animations.
+   RULE: No component/layout rules here — tokens only.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── DARK THEME (default) ──────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg-deepest:  #03050f;
+  --bg-deep:     #080c1e;
+  --bg-mid:      #0d1228;
+  --bg-surface:  #121830;
+
+  /* Glass surfaces — alpha 0.0–1.0 decimal ONLY */
+  --glass-bg-low:        rgba(255, 255, 255, 0.04);
+  --glass-bg-mid:        rgba(255, 255, 255, 0.07);
+  --glass-bg-high:       rgba(255, 255, 255, 0.10);
+  --glass-border:        rgba(255, 255, 255, 0.08);
+  --glass-border-hover:  rgba(255, 255, 255, 0.18);
+
+  /* Global accent palette */
+  --accent-blue:    #4d9fff;
+  --accent-violet:  #8b5cf6;
+  --accent-gold:    #f59e0b;
+  --accent-green:   #10d98a;
+  --accent-orange:  #ff6b35;
+  --accent-pink:    #f72585;
+
+  /* Section-specific accents */
+  --accent-home:     #FFB300;
+  --accent-study:    #4d9fff;
+  --accent-habits:   #10d98a;
+  --accent-workout:  #FF7043;
+  --accent-health:   #E91E63;
+  --accent-reports:  #7C4DFF;
+
+  /* Greeting time-of-day colors */
+  --greeting-morning:   #FFB300;
+  --greeting-afternoon: #FFA726;
+  --greeting-evening:   #FF7043;
+  --greeting-night:     #B0BEC5;
+
+  /* Typography */
+  --text-primary:    rgba(232, 235, 255, 0.95);
+  --text-secondary:  rgba(180, 190, 230, 0.75);
+  --text-muted:      rgba(130, 145, 190, 0.45); /* DECORATIVE ONLY — never for interactive/info text */
+
+  /* Shadows */
+  --shadow-card:   0 8px  32px rgba(0, 0, 20, 0.6);
+  --shadow-float:  0 16px 48px rgba(0, 0, 20, 0.7);
+
+  /* Border radii */
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+  --radius-xl:  28px;
+
+  /* Layout */
+  --header-h:  60px;
+  --nav-h:     68px;
+
+  /* Animation timing */
+  --anim-fast:    0.15s;
+  --anim-normal:  0.3s;
+  --anim-slow:    0.5s;
+
+  /* Easing curves — valid cubic-bezier decimals only */
+  --ease-smooth:  cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Accessibility — font scaling */
+  --font-scale: 1;
+
+  /* Backup status indicator colors */
+  --shield-safe:      #16A34A;
+  --shield-warning:   #D97706;
+  --shield-critical:  #DC2626;
+
+  /* Glow helpers */
+  --glow-blue:    rgba(77,  159, 255, 0.35);
+  --glow-violet:  rgba(139,  92, 246, 0.35);
+  --glow-orange:  rgba(255, 107,  53, 0.45);
+
+  /* Nav active tint backgrounds — section-specific, low opacity */
+  --nav-tint-home:     rgba(255, 179,   0, 0.13);
+  --nav-tint-study:    rgba( 77, 159, 255, 0.13);
+  --nav-tint-habits:   rgba( 16, 217, 138, 0.13);
+  --nav-tint-workout:  rgba(255, 112,  67, 0.13);
+  --nav-tint-health:   rgba(233,  30,  99, 0.13);
+  --nav-tint-reports:  rgba(124,  77, 255, 0.13);
+  --nav-tint-profile:  rgba(139,  92, 246, 0.13);
+
+  /* Toast tint backgrounds — all from tokens */
+  --toast-bg-success:  rgba( 16, 217, 138, 0.18);
+  --toast-bd-success:  rgba( 16, 217, 138, 0.35);
+  --toast-bg-error:    rgba(220,  38,  38, 0.18);
+  --toast-bd-error:    rgba(220,  38,  38, 0.35);
+  --toast-bg-warning:  rgba(217, 119,   6, 0.18);
+  --toast-bd-warning:  rgba(217, 119,   6, 0.35);
+  --toast-bg-info:     rgba( 77, 159, 255, 0.18);
+  --toast-bd-info:     rgba( 77, 159, 255, 0.35);
+
+  /* Tinted utility backgrounds */
+  --tint-gold:         rgba(245, 158,  11, 0.15);
+  --tint-gold-border:  rgba(245, 158,  11, 0.30);
+  --tint-critical:     rgba(220,  38,  38, 0.12);
+  --overlay-dark:      rgba(  0,   0,   0, 0.70);
+
+  /* Glass card structural shadows — white highlight lines on glass */
+  --glass-inset-top:   rgba(255, 255, 255, 0.08);
+  --glass-inset-ring:  rgba(255, 255, 255, 0.04);
+  --glass-inset-top-h: rgba(255, 255, 255, 0.10);  /* hover state */
+  --glass-inset-ring-h:rgba(255, 255, 255, 0.06);  /* hover state */
+
+  /* Input focus ring */
+  --focus-ring:        rgba( 77, 159, 255, 0.18);
+
+  /* Backup card border tints */
+  --backup-bd-safe:     rgba( 22, 163,  74, 0.30);
+  --backup-bd-warning:  rgba(217, 119,   6, 0.30);
+  --backup-bd-critical: rgba(220,  38,  38, 0.30);
+}
+
+/* ── LIGHT THEME — fully independent values ───────────────────── */
+.light-theme {
+  --bg-deepest:  #e8ebff;
+  --bg-deep:     #dde1f5;
+  --bg-mid:      #d0d5ee;
+  --bg-surface:  #c8ceea;
+
+  --glass-bg-low:        rgba(0, 0, 0, 0.03);
+  --glass-bg-mid:        rgba(0, 0, 0, 0.05);
+  --glass-bg-high:       rgba(0, 0, 0, 0.08);
+  --glass-border:        rgba(0, 0, 0, 0.10);
+  --glass-border-hover:  rgba(0, 0, 0, 0.22);
+
+  --text-primary:    rgba(13,  18,  40,  0.92);
+  --text-secondary:  rgba(58,  63,  110, 0.80);
+  --text-muted:      rgba(58,  63,  110, 0.40); /* DECORATIVE ONLY */
+
+  --shadow-card:   0 8px  32px rgba(100, 120, 200, 0.12);
+  --shadow-float:  0 16px 48px rgba(100, 120, 200, 0.20);
+
+  /* Section accents shift for light legibility */
+  --accent-home:     #D97706;
+  --accent-study:    #2563EB;
+  --accent-habits:   #059669;
+  --accent-workout:  #DC2626;
+  --accent-health:   #BE185D;
+  --accent-reports:  #6D28D9;
+
+  --greeting-morning:   #D97706;
+  --greeting-afternoon: #EA580C;
+  --greeting-evening:   #C2410C;
+  --greeting-night:     #6B7280;
+}
+
+/* ── HIGH CONTRAST — dark base ────────────────────────────────── */
+[data-contrast="high"] {
+  --text-primary:    rgba(255, 255, 255, 1.0);
+  --text-secondary:  rgba(255, 255, 255, 0.85);
+  --glass-border:    rgba(255, 255, 255, 0.30);
+}
+
+/* ── HIGH CONTRAST — light base ──────────────────────────────── */
+.light-theme[data-contrast="high"] {
+  --text-primary:    rgba(0, 0, 0, 1.0);
+  --text-secondary:  rgba(0, 0, 0, 0.85);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   KEYFRAMES
+   Rule: infinite animations use opacity/transform only (GPU-safe)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Section entry — fires once, stops (forwards fill) */
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Background orbs — continuous float */
+@keyframes orbFloat1 {
+  0%,  100% { transform: translate(0, 0)   scale(1);    }
+  50%       { transform: translate(40px, 30px) scale(1.08); }
+}
+
+@keyframes orbFloat2 {
+  0%,  100% { transform: translate(0, 0)     scale(1);    }
+  50%       { transform: translate(-35px, -25px) scale(1.06); }
+}
+
+/* LifeOS squircle widget — header indicator */
+@keyframes widgetPulse {
+  0%,  100% { opacity: 0.4; transform: scale(1);    }
+  50%       { opacity: 0.6; transform: scale(1.04); }
+}
+
+@keyframes widgetInnerBlink {
+  0%,  100% { opacity: 0.5; }
+  50%       { opacity: 0.9; }
+}
+
+/* Backup shield — CRITICAL state only */
+@keyframes backupPulse {
+  0%,  100% { opacity: 1;   transform: scale(1);    }
+  50%       { opacity: 0.6; transform: scale(1.05); }
+}
+
+/* ── REDUCED MOTION — disable ALL animations ────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration:        0.01ms !important;
+    animation-iteration-count: 1      !important;
+    transition-duration:       0.01ms !important;
+    scroll-behavior:           auto   !important;
+  }
+}

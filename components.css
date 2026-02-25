@@ -1,0 +1,657 @@
+/* ═══════════════════════════════════════════════════════════════
+   components.css — LifeOS 26 v3.5.1
+   Reusable UI primitives: glass cards, buttons, toasts,
+   modals, FAB, backup card, gradient text, spring tap.
+   RULE: No hardcoded hex. All values from CSS variables.
+   RULE: backdrop-filter always paired with -webkit-backdrop-filter.
+   RULE: rgba() alpha 0.0–1.0 only.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── ACCESSIBILITY UTILITY ─────────────────────────────────────── */
+.sr-only {
+  position:  absolute;
+  width:     1px;
+  height:    1px;
+  padding:   0;
+  margin:    -1px;
+  overflow:  hidden;
+  clip:      rect(0, 0, 0, 0);
+  border:    0;
+}
+
+/* ── GRADIENT TEXT ─────────────────────────────────────────────── */
+.gradient-text {
+  background:                linear-gradient(135deg, var(--accent-blue), var(--accent-violet));
+  -webkit-background-clip:   text;
+  -webkit-text-fill-color:   transparent;
+  background-clip:           text;
+}
+
+/* ── GLASS CARD ────────────────────────────────────────────────── */
+.glass-card {
+  background:              var(--glass-bg-mid);
+  border:                  1px solid var(--glass-border);
+  backdrop-filter:         blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  border-radius:           var(--radius-lg);
+  box-shadow:
+    inset 0 1px 0 var(--glass-inset-top),
+    0 0 0 1px var(--glass-inset-ring),
+    var(--shadow-card);
+  transition:
+    transform     var(--anim-normal) var(--ease-smooth),
+    box-shadow    var(--anim-normal) var(--ease-smooth);
+}
+
+.glass-card:hover {
+  transform:  translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 var(--glass-inset-top-h),
+    0 0 0 1px var(--glass-inset-ring-h),
+    var(--shadow-float);
+}
+
+.glass-card:active {
+  transform: scale(0.98);
+}
+
+/* ── SPRING TAP ────────────────────────────────────────────────── */
+.spring-tap {
+  transition: transform 0.45s var(--ease-spring);
+}
+
+.spring-tap:active {
+  transform:  scale(0.94);
+  transition: transform 0.08s ease;
+}
+
+/* ── BUTTONS ───────────────────────────────────────────────────── */
+/* Base */
+button {
+  font-family: Inter, sans-serif;
+  cursor:      pointer;
+  border:      none;
+  outline:     none;
+}
+
+button:focus-visible {
+  outline:        2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+/* Primary */
+.btn-primary {
+  background:    var(--accent-blue);
+  color:         var(--bg-deepest);
+  font-weight:   700;
+  font-size:     15px;
+  padding:       12px 24px;
+  border-radius: var(--radius-md);
+  transition:
+    transform   var(--anim-fast)   var(--ease-smooth),
+    box-shadow  var(--anim-normal) var(--ease-smooth),
+    opacity     var(--anim-fast)   var(--ease-smooth);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 4px 20px var(--glow-blue);
+  transform:  translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+  opacity:   0.9;
+}
+
+/* Secondary */
+.btn-secondary {
+  background:    var(--glass-bg-mid);
+  border:        1px solid var(--glass-border);
+  color:         var(--text-primary);
+  font-weight:   600;
+  font-size:     15px;
+  padding:       12px 24px;
+  border-radius: var(--radius-md);
+  transition:
+    background  var(--anim-fast)   var(--ease-smooth),
+    border-color var(--anim-fast)  var(--ease-smooth),
+    transform   var(--anim-fast)   var(--ease-smooth);
+}
+
+.btn-secondary:hover {
+  background:   var(--glass-bg-high);
+  border-color: var(--glass-border-hover);
+  transform:    translateY(-1px);
+}
+
+.btn-secondary:active {
+  transform: scale(0.97);
+}
+
+/* Ghost */
+.btn-ghost {
+  background:    transparent;
+  color:         var(--text-secondary);
+  font-weight:   500;
+  font-size:     14px;
+  padding:       10px 18px;
+  border-radius: var(--radius-md);
+  transition:
+    background var(--anim-fast) var(--ease-smooth),
+    color      var(--anim-fast) var(--ease-smooth);
+}
+
+.btn-ghost:hover {
+  background: var(--glass-bg-low);
+  color:      var(--text-primary);
+}
+
+/* Danger */
+.btn-danger {
+  background:    transparent;
+  border:        1px solid var(--shield-critical);
+  color:         var(--shield-critical);
+  font-weight:   600;
+  font-size:     15px;
+  padding:       12px 24px;
+  border-radius: var(--radius-md);
+  transition:
+    background var(--anim-fast) var(--ease-smooth),
+    transform  var(--anim-fast) var(--ease-smooth);
+}
+
+.btn-danger:hover {
+  background: var(--tint-critical);
+  transform:  translateY(-1px);
+}
+
+.btn-danger:active {
+  transform: scale(0.97);
+}
+
+/* ── TOAST NOTIFICATIONS ───────────────────────────────────────── */
+#toast-container {
+  position:        fixed;
+  bottom:          calc(var(--nav-h) + 16px);
+  right:           16px;
+  z-index:         1000;
+  display:         flex;
+  flex-direction:  column;
+  gap:             10px;
+  pointer-events:  none;
+}
+
+@keyframes toastSlideUp {
+  from {
+    opacity:   0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity:   1;
+    transform: translateY(0)    scale(1);
+  }
+}
+
+@keyframes toastFadeOut {
+  from {
+    opacity:   1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity:   0;
+    transform: translateY(-10px) scale(0.95);
+  }
+}
+
+.toast {
+  padding:         12px 16px;
+  border-radius:   var(--radius-md);
+  font-size:       14px;
+  font-weight:     500;
+  min-width:       220px;
+  max-width:       320px;
+  pointer-events:  all;
+  backdrop-filter:         blur(16px) saturate(1.6);
+  -webkit-backdrop-filter: blur(16px) saturate(1.6);
+  animation:       toastSlideUp 0.3s var(--ease-spring) forwards;
+  box-shadow:      var(--shadow-float);
+  word-break:      break-word;
+}
+
+.toast.hiding {
+  animation: toastFadeOut 0.25s var(--ease-smooth) forwards;
+}
+
+/* Toast type variants — all from design tokens */
+.toast--success {
+  background:   var(--toast-bg-success);
+  border:       1px solid var(--toast-bd-success);
+  color:        var(--text-primary);
+}
+
+.toast--error {
+  background:   var(--toast-bg-error);
+  border:       1px solid var(--toast-bd-error);
+  color:        var(--text-primary);
+}
+
+.toast--warning {
+  background:   var(--toast-bg-warning);
+  border:       1px solid var(--toast-bd-warning);
+  color:        var(--text-primary);
+}
+
+.toast--info {
+  background:   var(--toast-bg-info);
+  border:       1px solid var(--toast-bd-info);
+  color:        var(--text-primary);
+}
+
+/* ── MODAL ─────────────────────────────────────────────────────── */
+.modal-overlay {
+  position:        fixed;
+  inset:           0;
+  background:      var(--overlay-dark);
+  z-index:         500;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  padding:         24px;
+  animation:       modalBgIn 0.2s var(--ease-smooth) forwards;
+}
+
+@keyframes modalBgIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal-box {
+  background:              var(--glass-bg-high);
+  backdrop-filter:         blur(32px) saturate(2);
+  -webkit-backdrop-filter: blur(32px) saturate(2);
+  border:                  1px solid var(--glass-border-hover);
+  border-radius:           var(--radius-xl);
+  box-shadow:              var(--shadow-float);
+  max-width:               340px;
+  width:                   100%;
+  padding:                 28px 24px;
+  animation:               modalBoxIn 0.25s var(--ease-spring) forwards;
+}
+
+@keyframes modalBoxIn {
+  from {
+    opacity:   0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity:   1;
+    transform: translateY(0)    scale(1);
+  }
+}
+
+.modal-title {
+  font-size:   17px;
+  font-weight: 700;
+  color:       var(--text-primary);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.modal-actions {
+  display:    flex;
+  gap:        12px;
+  margin-top: 20px;
+}
+
+.modal-actions > * {
+  flex: 1;
+}
+
+/* ── FAB (Floating Action Button) ──────────────────────────────── */
+.fab-btn {
+  position:        fixed;
+  bottom:          calc(var(--nav-h) + 16px);
+  right:           16px;
+  z-index:         100;
+  width:           56px;
+  height:          56px;
+  border-radius:   50%;
+  background:      var(--accent-blue);
+  color:           var(--bg-deepest);
+  font-size:       26px;
+  font-weight:     700;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  box-shadow:      0 4px 20px var(--glow-blue);
+  transition:
+    transform    var(--anim-normal) var(--ease-spring),
+    background   var(--anim-fast)   var(--ease-smooth),
+    box-shadow   var(--anim-normal) var(--ease-smooth);
+  cursor:          pointer;
+  border:          none;
+  outline:         none;
+}
+
+.fab-btn:hover {
+  transform:  scale(1.08);
+  box-shadow: 0 6px 28px var(--glow-blue);
+}
+
+.fab-btn.open {
+  transform:  rotate(45deg) scale(1.08);
+  background: var(--accent-orange);
+  box-shadow: 0 6px 28px var(--glow-orange);
+}
+
+.fab-btn:active {
+  transform: scale(0.93);
+}
+
+/* FAB sub-options (notes types) */
+.fab-options {
+  position:        fixed;
+  bottom:          calc(var(--nav-h) + 82px);
+  right:           16px;
+  z-index:         99;
+  display:         flex;
+  flex-direction:  column;
+  gap:             10px;
+  opacity:         0;
+  transform:       translateY(10px) scale(0.95);
+  pointer-events:  none;
+  transition:
+    opacity   var(--anim-normal) var(--ease-smooth),
+    transform var(--anim-normal) var(--ease-spring);
+}
+
+.fab-options.open {
+  opacity:        1;
+  transform:      translateY(0) scale(1);
+  pointer-events: all;
+}
+
+.fab-option {
+  display:         flex;
+  align-items:     center;
+  gap:             10px;
+  padding:         10px 16px;
+  background:      var(--glass-bg-high);
+  backdrop-filter:         blur(16px) saturate(1.8);
+  -webkit-backdrop-filter: blur(16px) saturate(1.8);
+  border:          1px solid var(--glass-border-hover);
+  border-radius:   var(--radius-lg);
+  font-size:       14px;
+  font-weight:     600;
+  color:           var(--text-primary);
+  cursor:          pointer;
+  white-space:     nowrap;
+  box-shadow:      var(--shadow-card);
+  transition:
+    background var(--anim-fast) var(--ease-smooth),
+    transform  var(--anim-fast) var(--ease-smooth);
+}
+
+.fab-option:hover  { background: var(--glass-bg-high); transform: translateX(-4px); }
+.fab-option:active { transform: scale(0.96); }
+
+/* ── BACKUP STATUS CARD ────────────────────────────────────────── */
+.backup-card {
+  padding:      0;
+  border-radius: var(--radius-lg);
+  overflow:      hidden;
+}
+
+.backup-card--safe     { border-color: var(--backup-bd-safe); }
+.backup-card--warning  { border-color: var(--backup-bd-warning); }
+.backup-card--critical { border-color: var(--backup-bd-critical); }
+
+/* ── SECTION ERROR STATE ───────────────────────────────────────── */
+.section-error {
+  padding:      24px;
+  text-align:   center;
+  color:        var(--shield-critical);
+}
+
+.section-error-icon {
+  font-size:    40px;
+  margin-bottom: 12px;
+}
+
+.section-error-title {
+  font-weight:  700;
+  font-size:    16px;
+  margin-bottom: 8px;
+}
+
+.section-error-body {
+  color:      var(--text-secondary);
+  font-size:  13px;
+  word-break: break-all;
+}
+
+/* ── EMPTY STATE ───────────────────────────────────────────────── */
+.empty-state {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            12px;
+  padding:        40px 24px;
+  text-align:     center;
+}
+
+.empty-state-icon {
+  font-size:   48px;
+  line-height: 1;
+}
+
+.empty-state-title {
+  font-weight: 700;
+  font-size:   17px;
+  color:       var(--text-primary);
+}
+
+.empty-state-body {
+  color:     var(--text-secondary);
+  font-size: 14px;
+  max-width: 280px;
+}
+
+/* ── FORM INPUTS ───────────────────────────────────────────────── */
+input[type="text"],
+input[type="number"],
+input[type="time"],
+input[type="date"],
+input[type="email"],
+textarea,
+select {
+  width:         100%;
+  padding:       12px 14px;
+  background:    var(--glass-bg-mid);
+  border:        1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color:         var(--text-primary);
+  font-size:     15px;
+  font-family:   Inter, sans-serif;
+  transition:    border-color var(--anim-fast) var(--ease-smooth);
+  box-sizing:    border-box;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline:      none;
+  border-color: var(--accent-blue);
+  box-shadow:   0 0 0 3px var(--focus-ring);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* ── CANVAS CONTAINERS ─────────────────────────────────────────── */
+canvas {
+  display: block;
+  width:   100%;
+  height:  100%;
+}
+
+/* ── SECTION CARD SPACING ──────────────────────────────────────── */
+.card-stack {
+  display:        flex;
+  flex-direction: column;
+  gap:            12px;
+}
+
+/* ── PROGRESS RING CONTAINER ───────────────────────────────────── */
+.ring-container {
+  display:         flex;
+  gap:             16px;
+  justify-content: center;
+  flex-wrap:       wrap;
+  padding:         8px 0;
+}
+
+.ring-wrap {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            6px;
+}
+
+.ring-label {
+  font-size:   12px;
+  font-weight: 600;
+  color:       var(--text-secondary);
+  text-align:  center;
+}
+
+/* ── DIVIDER ───────────────────────────────────────────────────── */
+.divider {
+  height:     1px;
+  background: var(--glass-border);
+  margin:     16px 0;
+}
+
+/* ── BADGE ROW ─────────────────────────────────────────────────── */
+.badge-row {
+  display:    flex;
+  flex-wrap:  wrap;
+  gap:        8px;
+  padding:    4px 0;
+}
+
+.badge-chip {
+  padding:       6px 12px;
+  background:    var(--glass-bg-mid);
+  border:        1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  font-size:     13px;
+  font-weight:   600;
+  color:         var(--text-primary);
+}
+
+/* ── TAB SWITCHER (e.g. Habits ⇄ Notes) ───────────────────────── */
+.tab-switcher {
+  display:       flex;
+  gap:           4px;
+  background:    var(--glass-bg-low);
+  border:        1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding:       4px;
+  margin-bottom: 16px;
+}
+
+.tab-switcher-btn {
+  flex:          1;
+  padding:       10px;
+  border-radius: var(--radius-md);
+  font-size:     14px;
+  font-weight:   600;
+  color:         var(--text-secondary);
+  background:    none;
+  border:        none;
+  transition:
+    background var(--anim-fast) var(--ease-smooth),
+    color      var(--anim-fast) var(--ease-smooth);
+}
+
+.tab-switcher-btn.active {
+  background: var(--glass-bg-high);
+  color:      var(--text-primary);
+}
+
+/* ── STREAK BADGE ──────────────────────────────────────────────── */
+.streak-badge {
+  display:       inline-flex;
+  align-items:   center;
+  gap:           4px;
+  padding:       4px 10px;
+  border-radius: var(--radius-xl);
+  font-size:     13px;
+  font-weight:   700;
+  background:    var(--tint-gold);
+  border:        1px solid var(--tint-gold-border);
+  color:         var(--accent-gold);
+}
+
+/* ── PROFILE BADGE DOT — replaces inline style (spec: zero inline CSS) ── */
+.nav-icon-wrap--badge {
+  position: relative;
+}
+
+.profile-badge-dot {
+  position:      absolute;
+  top:           4px;
+  right:         4px;
+  width:         8px;
+  height:        8px;
+  border-radius: 50%;
+  background:    var(--shield-warning);
+  /* BackupStatus JS overrides background to --shield-critical when needed */
+  pointer-events: none;
+}
+
+/* ── LOADING SPINNER ───────────────────────────────────────────── */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.spinner {
+  width:          32px;
+  height:         32px;
+  border:         3px solid var(--glass-border);
+  border-top-color: var(--accent-blue);
+  border-radius:  50%;
+  animation:      spin 0.7s linear infinite;
+  margin:         0 auto;
+}
+
+/* ── REDUCED MOTION — component-level ─────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .glass-card,
+  .glass-card:hover,
+  .glass-card:active,
+  .spring-tap,
+  .spring-tap:active,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost,
+  .btn-danger,
+  .fab-btn,
+  .fab-option,
+  .toast,
+  .modal-box,
+  .modal-overlay,
+  .fab-options {
+    animation:  none !important;
+    transition: none !important;
+  }
+
+  .spinner {
+    animation: none !important;
+    border-top-color: var(--accent-blue);
+  }
+}

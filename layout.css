@@ -1,0 +1,380 @@
+/* ═══════════════════════════════════════════════════════════════
+   layout.css — LifeOS 26 v3.5.1
+   App shell: header / main / sections / bottom-nav.
+   RULE: No hardcoded hex colors — CSS variables ONLY.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── RESET ─────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin:  0;
+  padding: 0;
+}
+
+/* ── BASE ──────────────────────────────────────────────────────── */
+html,
+body {
+  height:      100%;
+  font-family: Inter, sans-serif;
+  background:  var(--bg-deepest);
+  color:       var(--text-primary);
+  font-size:   calc(16px * var(--font-scale));
+  overflow:    hidden;
+}
+
+body {
+  display:        flex;
+  flex-direction: column;
+}
+
+/* ── SPLASH SCREEN ─────────────────────────────────────────────── */
+#splash-screen {
+  position:        fixed;
+  inset:           0;
+  z-index:         9999;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  background:      var(--bg-deepest);
+  transition:      opacity var(--anim-normal) var(--ease-smooth);
+}
+
+#splash-screen.hiding {
+  opacity:        0;
+  pointer-events: none;
+}
+
+.splash-inner {
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  gap:             12px;
+}
+
+.splash-icon {
+  font-size:  56px;
+  line-height: 1;
+}
+
+.splash-title {
+  font-family:  Poppins, sans-serif;
+  font-weight:  800;
+  font-size:    28px;
+  background:   linear-gradient(135deg, var(--accent-blue), var(--accent-violet));
+  -webkit-background-clip:  text;
+  -webkit-text-fill-color:  transparent;
+  background-clip:          text;
+}
+
+/* ── HEADER ────────────────────────────────────────────────────── */
+header[role="banner"] {
+  position:        fixed;
+  top:             0;
+  left:            0;
+  right:           0;
+  height:          var(--header-h);
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  padding:         0 16px;
+  background:      var(--bg-surface);
+  border-bottom:   1px solid var(--glass-border);
+  z-index:         40;
+}
+
+/* Wordmark — Poppins gradient */
+.wordmark {
+  font-family:  Poppins, sans-serif;
+  font-weight:  800;
+  font-size:    20px;
+  background:   linear-gradient(135deg, var(--accent-blue), var(--accent-violet));
+  -webkit-background-clip:  text;
+  -webkit-text-fill-color:  transparent;
+  background-clip:          text;
+  letter-spacing: -0.02em;
+}
+
+/* LifeOS squircle widget */
+.lifeos-widget {
+  width:            32px;
+  height:           32px;
+  border-radius:    8px;
+  margin-left:      8px;
+  border:           1.5px solid var(--accent-blue);
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  animation:        widgetPulse 3s ease-in-out infinite;
+  flex-shrink:      0;
+}
+
+.lifeos-widget::after {
+  content:      '';
+  width:         10px;
+  height:        10px;
+  border-radius: 3px;
+  background:    var(--accent-blue);
+  animation:     widgetInnerBlink 2s ease-in-out infinite;
+}
+
+/* Backup shield icon — header right */
+.backup-shield {
+  font-size:     22px;
+  cursor:        pointer;
+  padding:       4px;
+  border-radius: var(--radius-sm);
+  transition:    transform var(--anim-fast) var(--ease-smooth);
+  user-select:   none;
+  flex-shrink:   0;
+}
+
+.backup-shield:hover  { transform: scale(1.1); }
+.backup-shield:active { transform: scale(0.94); }
+.backup-shield:focus-visible {
+  outline:        2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+/* Backup pulse — CRITICAL only */
+.backup-pulse {
+  animation: backupPulse 2s ease-in-out infinite;
+}
+
+/* ── MAIN SCROLL AREA ──────────────────────────────────────────── */
+main#main-content {
+  flex:                     1;
+  overflow-y:               auto;
+  padding-top:              var(--header-h);
+  padding-bottom:           var(--nav-h);
+  -webkit-overflow-scrolling: touch;
+  /* focus outline suppressed (tabindex="-1" target only) */
+  outline:                  none;
+}
+
+/* ── SECTIONS ──────────────────────────────────────────────────── */
+/*
+ * ╔══════════════════════════════════════════════════════════════╗
+ * ║  VISIBILITY CONTRACT — ui.js MUST FOLLOW THESE RULES EXACTLY ║
+ * ╚══════════════════════════════════════════════════════════════╝
+ *
+ * HOW IT WORKS (two-layer system):
+ *   Layer 1 — HTML semantics : `hidden` attribute  (boolean, set by JS)
+ *   Layer 2 — CSS animation  : `.section-active`   (class, set by JS)
+ *
+ *   `display:none`  below is a FALLBACK for browsers that ignore `hidden`.
+ *   `.section-active` overrides BOTH layers at once.
+ *   This pattern prevents FOUC (Flash of Unstyled Content) on first paint.
+ *
+ * ┌─────────────────────────────────────────────────────────────┐
+ * │  UI.showSection(id)  — STRICT ORDER, both steps mandatory   │
+ * │    Step 1: el.hidden = false          ← remove hidden first │
+ * │    Step 2: el.classList.add(          ← then add class      │
+ * │              'section-active')                              │
+ * ├─────────────────────────────────────────────────────────────┤
+ * │  UI.hideSection(id)  — STRICT ORDER, both steps mandatory   │
+ * │    Step 1: el.classList.remove(       ← remove class first  │
+ * │              'section-active')                              │
+ * │    Step 2: el.hidden = true           ← then add hidden     │
+ * └─────────────────────────────────────────────────────────────┘
+ *
+ * ⚠️  WHAT BREAKS IF YOU SKIP A STEP:
+ *   • Only el.hidden = false (no class)  → display:block nahi milega,
+ *     browser `hidden` override nahi hoga — section invisible rahega
+ *   • Only classList.add (no hidden remove) → browser `hidden` attr
+ *     CSS se zyada priority leta hai — section phir bhi hidden rahega
+ *   • Wrong order on hide → animation flicker / section briefly visible
+ *
+ * ✅  CSS SIDE: Correct. Koi fix nahi chahiye. (ChatGPT verified)
+ */
+section[role="region"] {
+  display: none;    /* fallback — hidden attribute handles semantics */
+  width:   100%;
+  padding: 16px;
+}
+
+/* Active section — overrides both hidden attr and display:none */
+section[role="region"].section-active {
+  display:   block;
+  animation: pageEnter 0.32s var(--ease-smooth) forwards;
+}
+
+/* ── OFFLINE BANNER ────────────────────────────────────────────── */
+#offline-banner {
+  position:         fixed;
+  top:              0;
+  left:             0;
+  right:            0;
+  z-index:          200;
+  padding:          10px 16px;
+  background:       var(--accent-orange);
+  color:            var(--bg-deepest);
+  font-weight:      600;
+  font-size:        14px;
+  text-align:       center;
+}
+
+/* ── SKIP LINK ─────────────────────────────────────────────────── */
+.skip-link {
+  position:       absolute;
+  top:            -100%;
+  left:           16px;
+  z-index:        10000;
+  padding:        10px 18px;
+  background:     var(--accent-blue);
+  color:          var(--bg-deepest);
+  font-weight:    700;
+  border-radius:  var(--radius-md);
+  text-decoration: none;
+  transition:     top var(--anim-fast) ease;
+}
+
+.skip-link:focus {
+  top: 16px;
+}
+
+/* ── BOTTOM NAVIGATION ─────────────────────────────────────────── */
+.bottom-nav {
+  position:        fixed;
+  bottom:          0;
+  left:            0;
+  right:           0;
+  height:          var(--nav-h);
+  display:         flex;
+  justify-content: space-around;
+  align-items:     center;
+  padding:         8px 0 max(8px, env(safe-area-inset-bottom));
+  background:      var(--bg-surface);
+  border-top:      1px solid var(--glass-border);
+  z-index:         50;
+}
+
+/* Nav tab button */
+.nav-tab {
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  gap:             3px;
+  background:      none;
+  border:          none;
+  cursor:          pointer;
+  padding:         4px 6px;
+  border-radius:   var(--radius-md);
+  min-width:       44px;
+  color:           inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-tab:focus-visible {
+  outline:        2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+/* Icon circle */
+.nav-icon-wrap {
+  width:            44px;
+  height:           44px;
+  border-radius:    50%;
+  display:          flex;
+  align-items:      center;
+  justify-content:  center;
+  transition:
+    background var(--anim-normal) var(--ease-smooth),
+    transform  var(--anim-fast)   var(--ease-smooth);
+}
+
+/* Icon color — muted by default, brightens on active */
+.nav-icon {
+  color:      var(--text-muted);
+  transition: color var(--anim-normal) var(--ease-smooth);
+  display:    block;
+}
+
+/* ── ACTIVE STATES — section-specific tint backgrounds (tokens only) ── */
+/* Dashboard */
+.nav-tab[data-section="dashboard"] .nav-icon-wrap.active {
+  background: var(--nav-tint-home);
+}
+.nav-tab[data-section="dashboard"] .nav-icon-wrap.active .nav-icon {
+  color: var(--accent-home);
+}
+
+/* Study */
+.nav-tab[data-section="study"] .nav-icon-wrap.active {
+  background: var(--nav-tint-study);
+}
+.nav-tab[data-section="study"] .nav-icon-wrap.active .nav-icon {
+  color: var(--accent-study);
+}
+
+/* Habits */
+.nav-tab[data-section="habits"] .nav-icon-wrap.active {
+  background: var(--nav-tint-habits);
+}
+.nav-tab[data-section="habits"] .nav-icon-wrap.active .nav-icon {
+  color: var(--accent-habits);
+}
+
+/* Workout */
+.nav-tab[data-section="workout"] .nav-icon-wrap.active {
+  background: var(--nav-tint-workout);
+}
+.nav-tab[data-section="workout"] .nav-icon-wrap.active .nav-icon {
+  color: var(--accent-workout);
+}
+
+/* Health */
+.nav-tab[data-section="health"] .nav-icon-wrap.active {
+  background: var(--nav-tint-health);
+}
+.nav-tab[data-section="health"] .nav-icon-wrap.active .nav-icon {
+  color: var(--accent-health);
+}
+
+/* Reports */
+.nav-tab[data-section="reports"] .nav-icon-wrap.active {
+  background: var(--nav-tint-reports);
+}
+.nav-tab[data-section="reports"] .nav-icon-wrap.active .nav-icon {
+  color: var(--accent-reports);
+}
+
+/* Profile */
+.nav-tab[data-section="profile"] .nav-icon-wrap.active {
+  background: var(--nav-tint-profile);
+}
+.nav-tab[data-section="profile"] .nav-icon-wrap.active .nav-icon {
+  color: var(--accent-profile);
+}
+
+/* Nav label */
+.nav-label {
+  font-size:    10px;
+  font-weight:  500;
+  color:        var(--text-muted);
+  transition:   color var(--anim-normal) var(--ease-smooth);
+  white-space:  nowrap;
+  user-select:  none;
+}
+
+/* Active label color — inherit from icon wrap active */
+.nav-tab[data-section="dashboard"] .nav-icon-wrap.active ~ .nav-label { color: var(--accent-home); }
+.nav-tab[data-section="study"]     .nav-icon-wrap.active ~ .nav-label { color: var(--accent-study); }
+.nav-tab[data-section="habits"]    .nav-icon-wrap.active ~ .nav-label { color: var(--accent-habits); }
+.nav-tab[data-section="workout"]   .nav-icon-wrap.active ~ .nav-label { color: var(--accent-workout); }
+.nav-tab[data-section="health"]    .nav-icon-wrap.active ~ .nav-label { color: var(--accent-health); }
+.nav-tab[data-section="reports"]   .nav-icon-wrap.active ~ .nav-label { color: var(--accent-reports); }
+.nav-tab[data-section="profile"]   .nav-icon-wrap.active ~ .nav-label { color: var(--accent-profile); }
+
+/* ── REDUCED MOTION — layout-level overrides ───────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .lifeos-widget,
+  .lifeos-widget::after,
+  .backup-pulse,
+  .skip-link {
+    animation:  none;
+    transition: none;
+  }
+}
